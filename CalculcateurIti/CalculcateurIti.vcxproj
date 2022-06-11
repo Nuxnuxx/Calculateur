@@ -143,10 +143,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Calculateur.cpp" />
+    <ClCompile Include="Matrice.cpp" />
+    <ClCompile Include="Module inout.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="class.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="M.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
