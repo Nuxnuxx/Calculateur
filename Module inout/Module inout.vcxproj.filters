@@ -15,17 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Matrice.cpp">
+    <ClCompile Include="..\CalculcateurIti\Module inout.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="class.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="M.txt">
+    <Text Include="..\CalculcateurIti\M.txt">
       <Filter>Fichiers de ressources</Filter>
     </Text>
   </ItemGroup>

@@ -74,7 +74,6 @@ int main()
     else
         cout << "Impossible d'ouvrir le fichier !" << endl;
 
-	
     delete result;
     delete pstmt;
     delete con;
