@@ -12,6 +12,7 @@ using namespace std;
 const int inf = 999999; //représente l'infini
 const int V = 126; //nombre d'arrêts dans le réseau
 int path[V]; //chemin final
+int cptPath=0;
 int previous[V]; //prédécesseur du sommet
 
 const string server = "10.1.139.236";
@@ -105,10 +106,14 @@ void calcPath(int s, int f) {
 	int i;
 	path[0] = f;
 	i = 1;
-	while (path[i] != s) {
+	cptPath++;
+	while (path[i-1] != s) {
 		path[i] = previous[path[i - 1]];
+		cptPath++;
 		i++;
 	}
+	//print path
+
 }
 
 void initDijkstra() {
@@ -201,11 +206,45 @@ void initDijkstra() {
 	time = dijkstra(graph, source, final);
 	calcPath(source, final);
 
-	//print result
-	std::cout << "Il faut " << time << " minutes pour aller de " << sourceInput << " à " << finalInput << "." << std::endl;
+	//print result dijkstra
+	std::cout << "Il faut " << time << " minutes pour aller de " << sourceInput << " a " << finalInput << "." << std::endl;
 	std::cout << "Trajet : " << std::endl;
 
-	//BD trajet to do
+	string nomArret;
+	string tmp = std::to_string(path[cptPath - 1]+1);
+	string request2 = "select nomArret from Arret where nArret =" + tmp + ";";
+
+	pstmt = con->prepareStatement(request2);
+	result = pstmt->executeQuery();
+	while (result->next()) {
+		 nomArret = result->getString("nomArret");
+	}
+
+	int temps = graph[path[cptPath - 1]][path[cptPath - 2]];
+	cout << nomArret << " --" << temps << "--> ";
+
+	
+	for (int i = cptPath-2; i>0; i--) {
+		tmp = std::to_string(path[i]+1);
+		request2 = "select nomArret from Arret where nArret =" + tmp + ';';
+		pstmt = con->prepareStatement(request2);
+		result = pstmt->executeQuery();
+
+		while (result->next()) {
+			nomArret = result->getString("nomArret");
+		}
+		temps = graph[path[i]][path[i-1]];
+		cout << nomArret << " --" << temps << "--> ";
+	}
+	tmp = std::to_string(path[0]+1);
+	request2 = "select nomArret from Arret where nArret =" + tmp + ';';
+	pstmt = con->prepareStatement(request2);
+	result = pstmt->executeQuery();
+
+	while (result->next()) {
+		nomArret = result->getString("nomArret");
+	}
+	cout << nomArret<<endl;
 }
 
 int main() {
