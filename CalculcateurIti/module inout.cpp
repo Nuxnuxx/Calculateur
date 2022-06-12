@@ -4,7 +4,8 @@
 #include <cppconn/exception.h>
 #include <cppconn/prepared_statement.h>
 #include <string>
-#include <fstream>
+#include <vector>
+#include <stdlib.h>
 using namespace std;
 
 const int inf = 999999; //représente l'infini
@@ -21,20 +22,20 @@ sql::Connection* con;
 sql::PreparedStatement* pstmt;
 sql::ResultSet* result;
 
-void initBD(){
-    try
-    {
-        driver = get_driver_instance();
-        con = driver->connect(server, username, password);
-    }
-    catch (sql::SQLException e)
-    {
-        cout << "Could not connect to server. Error message: " << e.what() << endl;
-        system("pause");
-        exit(1);
-    }
+void initBD() {
+	try
+	{
+		driver = get_driver_instance();
+		con = driver->connect(server, username, password);
+	}
+	catch (sql::SQLException e)
+	{
+		cout << "Could not connect to server. Error message: " << e.what() << endl;
+		system("pause");
+		exit(1);
+	}
 
-    con->setSchema("basec2");
+	con->setSchema("basec2");
 }
 
 int minDistance(int* dist, bool* visited) {
@@ -50,7 +51,7 @@ int minDistance(int* dist, bool* visited) {
 	return min;
 }
 
-int dijkstra(int** matrice, int s, int f) {
+int dijkstra(int matrice[][126], int s, int f) {
 	int current;
 	int dist[V];
 	bool visited[V];
@@ -89,24 +90,46 @@ void calcPath(int s, int f) {
 }
 
 void initDijkstra() {
+
 	int graph[V][V];
 	int source, final, time;
 	char* sourceInput, finalInput;
 
-	ofstream fichier("M.txt");
-	if (fichier)
-	{
-		for (int i = 0; i < 126; i++) {
-			for (int j = 0; j < 126; j++) {
-				fichier << M[i][j] << " ";
-			}
-			fichier << endl;
+	FILE* fichier = NULL;
+	char ch;
+	int i = 0;
+	int j = 0;
+	vector<vector<int>> graph(V, vector<int>(V));
+	for (int i = 0; i < V; i++) {
+		for (int j = 0; j < V; j++) {
+			graph[i][j] = 0;
 		}
-		fichier.close();
+	}
+	fichier = fopen("M.txt", "r");
+	if (fichier == NULL)
+	{
+		printf("\nFichier impossible à ouvrir");
 	}
 	else
-		cout << "Impossible d'ouvrir le fichier !" << endl;
-
+	{
+		while ((ch = fgetc(fichier)) != EOF)
+		{
+			if (ch == '\n')
+			{
+				i++;
+				j = 0;
+			}
+			if (ch == '1')
+			{
+				graph[i][j] = 1;
+			}
+			if (ch == '0' or ch == '1')
+			{
+				j++;
+			}
+		}
+	}
+	
 	for (int i = 0; i < V; i++) {
 		previous[i] = NULL;
 	}
@@ -124,42 +147,42 @@ void initDijkstra() {
 	std::cout << "Il faut " << time << " minutes pour aller de " << sourceInput << " à " << finalInput << "." << std::endl;
 	std::cout << "Trajet : " << std::endl;
 	//BD
+
 }
 
 int main() {
 	initBD();
-    int nArretDep;
-    int nArretArr;
-    string nomArretDepart;
-    string nomArretArrivee;
-    cout << "Donnez le nom de l'arret de depart :";
-    cin >> nomArretDepart;
-    cout << "Donnez le nom de l'arret d'arrivee :";
-    cin >> nomArretArrivee;
+	initDijkstra();
+	/*
+	int nArretDep;
+	int nArretArr;
+	string nomArretDepart;
+	string nomArretArrivee;
 
-    string request = "select nArret from Arret where nomArret = '" + nomArretDepart + "';";
-    pstmt = con->prepareStatement(request);
+	string request = "select nArret from Arret where nomArret = '" + nomArretDepart + "';";
+	pstmt = con->prepareStatement(request);
 	result = pstmt->executeQuery();
 
 	while (result->next()) {
 		nArretDep = result->getInt("nArret");
 	}
 
-    string request1 = "select nArret from Arret where nomArret = '" + nomArretArrivee + "';";
-    pstmt = con->prepareStatement(request1);
+	string request1 = "select nArret from Arret where nomArret = '" + nomArretArrivee + "';";
+	pstmt = con->prepareStatement(request1);
 	result = pstmt->executeQuery();
 
 	while (result->next()) {
-	    nArretArr = result->getInt("nArret");
+		nArretArr = result->getInt("nArret");
 	}
 
-    cout << nArretDep << endl;
-    cout << nArretArr << endl;
+	cout << nArretDep << endl;
+	cout << nArretArr << endl;
 
-    ofstream fichier("M.txt");
-    if (fichier) {
-        cout << "Ouverture du fichier" << endl;
-    } else
+	ofstream fichier("M.txt");
+	if (fichier) {
+		cout << "Ouverture du fichier" << endl;
+	}
+	else
 		cout << "Erreur à l'ouverture du fichier" << endl;
 
 	delete result;
@@ -167,4 +190,5 @@ int main() {
 	delete con;
 	system("pause");
 	return 0;
+	*/
 }
