@@ -131,7 +131,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>STATIC_CONCPP;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\gaetan\Downloads\mysql8.0.29-winx64\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\escan\Downloads\mysql8.0.29-winx64\include\jdbc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

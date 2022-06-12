@@ -52,12 +52,12 @@ int main()
 
     initBD();
 
-    pstmt = con->prepareStatement("SELECT nArretA, nArretB FROM TempsTrajet;");
+    pstmt = con->prepareStatement("SELECT nArretA, nArretB, intervalleTemps FROM TempsTrajet;");
     result = pstmt->executeQuery();
 
     while (result->next()) {
-        M[result->getInt(1) - 1][result->getInt(2) - 1] = 1;
-        M[result->getInt(2) - 1][result->getInt(1) - 1] = 1;
+        M[result->getInt(1) - 1][result->getInt(2) - 1] = result->getInt(3);
+        M[result->getInt(2) - 1][result->getInt(1) - 1] = result->getInt(3);
     }
 
     ofstream fichier("M.txt");

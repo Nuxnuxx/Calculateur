@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <stdlib.h>
+#include <ctype.h>
 using namespace std;
 
 const int inf = 999999; //représente l'infini
@@ -38,7 +39,7 @@ void initBD() {
 	con->setSchema("basec2");
 }
 
-int minDistance(int* dist, bool* visited) {
+int minDistance(int dist[], bool visited[]) {
 	int minVal = inf;
 	int min;
 
@@ -51,7 +52,7 @@ int minDistance(int* dist, bool* visited) {
 	return min;
 }
 
-int dijkstra(int matrice[][126], int s, int f) {
+int dijkstra(vector<vector<int>> matrice, int s, int f) {
 	int current;
 	int dist[V];
 	bool visited[V];
@@ -91,12 +92,16 @@ void calcPath(int s, int f) {
 
 void initDijkstra() {
 
-	int graph[V][V];
+	//int graph[V][V];
 	int source, final, time;
-	char* sourceInput, finalInput;
+	string sourceInput, finalInput;
 
+
+	//init graph
 	FILE* fichier = NULL;
 	char ch;
+	int num;
+	bool dig;
 	int i = 0;
 	int j = 0;
 	vector<vector<int>> graph(V, vector<int>(V));
@@ -114,81 +119,74 @@ void initDijkstra() {
 	{
 		while ((ch = fgetc(fichier)) != EOF)
 		{
+			dig = isdigit(ch);
+			if (dig) {
+				num = ch - '0';
+			}
 			if (ch == '\n')
 			{
 				i++;
 				j = 0;
 			}
-			if (ch == '1')
+			if (dig && num > 0)
 			{
-				graph[i][j] = 1;
+				graph[i][j] = num;
 			}
-			if (ch == '0' or ch == '1')
+			if (dig)
 			{
 				j++;
 			}
 		}
 	}
 	
+
+	//initPrevious
 	for (int i = 0; i < V; i++) {
 		previous[i] = NULL;
 	}
 
+	//user input
 	std::cout << "Saisir l'arrêt de départ : " << std::endl;
-	std::cin >> sourceInput;
+	std::getline(std::cin, sourceInput);
 	std::cout << "Saisir l'arrêt d'arrivée : " << std::endl;
-	std::cin >> finalInput;
+	std::getline(std::cin, finalInput);
 
-	//BD assigne narret
 
+	//getnArret from user input
+	string request = "select nArret from Arret where nomArret = '" + sourceInput + "';";
+	pstmt = con->prepareStatement(request);
+	result = pstmt->executeQuery();
+
+	while (result->next()) {
+		source = result->getInt("nArret");
+	}
+
+	string request1 = "select nArret from Arret where nomArret = '" + finalInput + "';";
+	pstmt = con->prepareStatement(request1);
+	result = pstmt->executeQuery();
+
+	while (result->next()) {
+		final = result->getInt("nArret");
+	}
+
+	//call algorithm
 	time = dijkstra(graph, source, final);
 	calcPath(source, final);
 
+	//print result
 	std::cout << "Il faut " << time << " minutes pour aller de " << sourceInput << " à " << finalInput << "." << std::endl;
 	std::cout << "Trajet : " << std::endl;
-	//BD
-
+	//BD trajet to do
 }
 
 int main() {
 	initBD();
 	initDijkstra();
-	/*
-	int nArretDep;
-	int nArretArr;
-	string nomArretDepart;
-	string nomArretArrivee;
-
-	string request = "select nArret from Arret where nomArret = '" + nomArretDepart + "';";
-	pstmt = con->prepareStatement(request);
-	result = pstmt->executeQuery();
-
-	while (result->next()) {
-		nArretDep = result->getInt("nArret");
-	}
-
-	string request1 = "select nArret from Arret where nomArret = '" + nomArretArrivee + "';";
-	pstmt = con->prepareStatement(request1);
-	result = pstmt->executeQuery();
-
-	while (result->next()) {
-		nArretArr = result->getInt("nArret");
-	}
-
-	cout << nArretDep << endl;
-	cout << nArretArr << endl;
-
-	ofstream fichier("M.txt");
-	if (fichier) {
-		cout << "Ouverture du fichier" << endl;
-	}
-	else
-		cout << "Erreur à l'ouverture du fichier" << endl;
 
 	delete result;
 	delete pstmt;
 	delete con;
 	system("pause");
 	return 0;
-	*/
+	
 }
